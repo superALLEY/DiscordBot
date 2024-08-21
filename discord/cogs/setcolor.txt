@@ -1,0 +1,50 @@
+import discord
+from discord.ext import commands , tasks
+from itertools import cycle
+import random
+import os
+import asyncio
+from discord import app_commands
+
+class Setcolor(commands.Cog):
+    def __init__(self, client):
+        self.client = client
+    
+    @commands.Cog.listener()
+    async def on_ready(self):
+        await self.client.tree.sync()
+        print("setcolor.py is ready!")
+
+    
+
+
+    class SelectMenu(discord.ui.View):
+        options = [
+            discord.SelectOption(label="Red", value="1", description="Gives the color red to user."), 
+            discord.SelectOption(label="Blue", value="2", description="Gives the color blue to user."), 
+            discord.SelectOption(label="yellow", value="3", description="Gives the color yellow to user.")
+        ]
+    
+        @discord.ui.select(placeholder="Select Color", options=options)
+        async def menu_callback(self, interaction: discord.Interaction, select):
+            select.disabled=True
+            if select.values[0] == "1":
+            
+                 await interaction.response.send_message(content="vour color is now red.")
+            elif select.values[0] == "2":
+            
+                await interaction.response.send_message(content="Your color is now blue.")
+            elif select.values[0] == "3":
+            
+                await interaction.response.send_message(content="Your color is now yellow.")
+    @client.tree.command(name="setcolor", description="Sets your role color of choice.")
+    async def setcolor(interaction: discord.Interaction):
+        await interaction.response.send_message(content="Select your role color!", view=SelectMenu())
+
+    
+
+
+
+
+async def setup(client):
+    await client.add_cog(Setcolor(client))
